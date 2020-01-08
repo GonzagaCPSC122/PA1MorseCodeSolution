@@ -6,12 +6,12 @@ int main() {
 
     string mode, source, destination;
 //    cin >> mode >> source >> destination;
-    mode = "-m";
-    source = "english_orig.txt";
-    destination = "morse.txt";
-//    mode = "-t";
-//    source = "morse_orig.txt";
-//    destination = "english.txt";
+//    mode = "-m";
+//    source = "english_orig.txt";
+//    destination = "morse.txt";
+    mode = "-t";
+    source = "morse_orig.txt";
+    destination = "english.txt";
 
     doConversion(mode, source, destination);
     
