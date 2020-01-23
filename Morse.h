@@ -1,3 +1,12 @@
+/*
+@author Gina Sprint
+
+English to morse and morse to English converter
+2 possible solutions included
+1. line by line then character by character
+2. character by character
+*/
+
 #ifndef MORSE_H
 #define MORSE_H
 
@@ -15,6 +24,7 @@ void openSourceFile(string filename, ifstream& inFile);
 void openDestinationFile(string filename, ofstream& outFile);
 int toMorse(ifstream& source, ofstream& destination, string morseStrings[]);
 char findCharForMorse(string morseString, string morseStrings[]);
+char convertToUpperCaseIfNeeded(char);
 int toEnglish(ifstream& source, ofstream& destination, string morseStrings[]);
 void showResults(string sourceStr, string destinationStr, int numChars);
 void doConversion(string mode, string sourceStr, string destinationStr);

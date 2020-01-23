@@ -1,3 +1,12 @@
+/*
+@author Gina Sprint
+
+English to morse and morse to English converter
+2 possible solutions included
+1. line by line then character by character
+2. character by character
+*/
+
 #include "Morse.h"
 
 
@@ -71,6 +80,132 @@ void openDestinationFile(string filename, ofstream& outFile) {
     }
 }
 
+void showResults(string sourceStr, string destinationStr, int numChars) {
+	cout << endl << sourceStr << endl << endl;
+	showContentsOfFile(sourceStr);
+	cout << endl << destinationStr << endl << endl;
+	showContentsOfFile(destinationStr);
+		cout << endl << "Total characters converted successfully (including newline and white spaces): " << numChars << endl << endl;
+}
+
+void doConversion(string mode, string sourceStr, string destinationStr) {
+	int numChars = 0;
+    ifstream source;
+    ofstream destination;
+    string morseStrings[MORSE_STRINGS_ARR_SIZE];
+    
+	initializeMorseStrings(morseStrings);
+
+    openSourceFile(sourceStr, source);
+    openDestinationFile(destinationStr, destination);
+
+    if (mode == "-m") {
+        numChars = toMorse(source, destination, morseStrings);
+    }
+    else if (mode == "-t") {
+        numChars = toEnglish(source, destination, morseStrings);
+    }
+    else {
+        cout << "Unrecognized mode" << endl;
+        exit(-1);
+    }
+    
+    source.close();
+    destination.close();
+    
+    showResults(sourceStr, destinationStr, numChars);
+}
+
+char findCharForMorse(string morseString, string morseStrings[]) {
+	int i;
+	for (i = 0; i < MORSE_STRINGS_ARR_SIZE; i++) {
+		if (morseStrings[i] == morseString) {
+			return (char) i;
+		}
+	}
+	cout << "Unrecognzied morseString" << endl;
+	exit(-1);
+}
+
+char convertToUpperCaseIfNeeded(char letter) {
+	if (letter >= 'a' && letter <= 'z') {
+		letter = toupper(letter);
+	}
+	return letter;
+}
+
+///////////////////////////
+// LINE BY LINE SOLUTIONS
+///////////////////////////
+int toMorse(ifstream& source, ofstream& destination, string morseStrings[]) {
+	char currentCharacter, prevCharacter;
+	int numChars = 0;
+	string line = "";
+
+	while (!source.eof()) {
+		getline(source, line);
+		if (source.good()) {
+			for (int i = 0; i < line.size(); i++) {
+				currentCharacter = line.at(i);
+				if (currentCharacter == ' ') {
+					destination << " ";
+					numChars++;
+				}
+				else {
+					// conver to upper case if a lower case character
+					currentCharacter = convertToUpperCaseIfNeeded(currentCharacter);
+					if (currentCharacter >= 'A' && currentCharacter <= 'Z' || currentCharacter >= '0' && currentCharacter <= '9') {
+						destination << morseStrings[currentCharacter] << " ";
+						numChars++;
+					}
+				}
+				prevCharacter = currentCharacter;
+			}
+			destination << endl;
+			numChars++;
+		}
+	}
+	return numChars;
+}
+
+int toEnglish(ifstream& source, ofstream& destination, string morseStrings[]) {
+	char currentCharacter, prevCharacter;
+	string line = "", currentString = "";
+	int numChars = 0;
+
+	while (!source.eof()) {
+		getline(source, line);
+		if (source.good()) {
+			for (int i = 0; i < line.size(); i++) {
+				currentCharacter = line.at(i);
+				if (currentCharacter == ' ') {
+					if (prevCharacter == ' ') { // actually a space
+						destination << " ";
+						numChars++;
+					}
+					else { // end of a morse string... print out character
+						destination << findCharForMorse(currentString, morseStrings);
+						currentString = "";
+						numChars++;
+					}
+				}
+				else {
+					currentString = currentString + currentCharacter;
+				}
+				prevCharacter = currentCharacter;
+			}
+			destination << endl;
+			numChars++;
+		}
+	}
+	return numChars;
+}
+
+
+///////////////////////////
+// CHAR BY CHAR SOLUTIONS
+///////////////////////////
+/*
 int toMorse(ifstream& source, ofstream& destination, string morseStrings[]) {
 	char currentCharacter, prevCharacter;
 	bool wroteFirstMorseString = false;
@@ -94,9 +229,7 @@ int toMorse(ifstream& source, ofstream& destination, string morseStrings[]) {
 				destination << " ";
 			}
 			// conver to upper case if a lower case character
-			if (currentCharacter >= 'a' && currentCharacter <= 'z') {
-				currentCharacter = toupper(currentCharacter);
-			}
+			currentCharacter = convertToUpperCaseIfNeeded(currentCharacter);
 			if (currentCharacter >= 'A' && currentCharacter <= 'Z' || currentCharacter >= '0' && currentCharacter <= '9') {
 				destination << morseStrings[currentCharacter];
 				numChars++;
@@ -147,40 +280,4 @@ int toEnglish(ifstream& source, ofstream& destination, string morseStrings[]) {
 	}
 	return numChars;
 }
-
-void showResults(string sourceStr, string destinationStr, int numChars) {
-	cout << endl << sourceStr << endl << endl;
-	showContentsOfFile(sourceStr);
-	cout << endl << destinationStr << endl << endl;
-	showContentsOfFile(destinationStr);
-		cout << endl << "Total characters converted successfully (including newline and white spaces): " << numChars << endl << endl;
-}
-
-void doConversion(string mode, string sourceStr, string destinationStr) {
-	int numChars = 0;
-    ifstream source;
-    ofstream destination;
-    string morseStrings[MORSE_STRINGS_ARR_SIZE];
-    
-	initializeMorseStrings(morseStrings);
-
-    openSourceFile(sourceStr, source);
-    openDestinationFile(destinationStr, destination);
-
-    if (mode == "-m") {
-        numChars = toMorse(source, destination, morseStrings);
-    }
-    else if (mode == "-t") {
-        numChars = toEnglish(source, destination, morseStrings);
-    }
-    else {
-        cout << "Unrecognized mode" << endl;
-        exit(-1);
-    }
-    
-    source.close();
-    destination.close();
-    
-    showResults(sourceStr, destinationStr, numChars);
-}
-
+*/
