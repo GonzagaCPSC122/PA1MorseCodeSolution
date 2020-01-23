@@ -240,17 +240,6 @@ int toMorse(ifstream& source, ofstream& destination, string morseStrings[]) {
 	return numChars;
 }
 
-char findCharForMorse(string morseString, string morseStrings[]) {
-	int i;
-	for (i = 0; i < MORSE_STRINGS_ARR_SIZE; i++) {
-		if (morseStrings[i] == morseString) {
-			return (char) i;
-		}
-	}
-	cout << "Unrecognzied morseString" << endl;
-	exit(-1);
-}
-
 int toEnglish(ifstream& source, ofstream& destination, string morseStrings[]) {
 	char currentCharacter, prevCharacter;
 	string currentString = "";
